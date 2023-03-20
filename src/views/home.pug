@@ -6,7 +6,14 @@ html(lang="en")
         link(rel="stylesheet", href="https://unpkg.com/mvp.css")
     body
         header
-            h1 Hello World!
+            h1 Welcome to Zooooom
         main 
-            h2 Welcome to Zooooom
+            h2
+            form#nickname
+                input(type="text", placeholder="nickname")
+                button Save
+            ul
+            form#message
+                input(type="text", placeholder="write a message", required)
+                button Send
         script(src="public/js/app.js")

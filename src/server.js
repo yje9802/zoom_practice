@@ -17,17 +17,36 @@ const server = http.createServer(app);
 // create websocket server on top of the http server
 const wss = new WebSocket.Server({ server });
 
+// 어떤 socket이 연결되었는지 저장하기 위한 array
+const sockets = [];
+
 wss.on("connection", (socket) => {
+	sockets.push(socket);
+	socket["nickname"] = "Someone";
+
 	console.log("Connected to the Browser ⛳️");
 	socket.on("close", () => {
 		console.log("Disconnected from the Browser 🥊");
 	});
+
 	// get message from the browser
+	// socket.on("message", (message) => {
+	// 	console.log(message.toString("utf-8"));
+	// });
 	socket.on("message", (message) => {
-		console.log(message.toString("utf-8"));
+		const parsed = JSON.parse(message);
+
+		if (parsed.type === "message") {
+			sockets.forEach((aSocket) =>
+				aSocket.send(`${socket.nickname}: ${parsed.payload}`)
+			);
+		} else if (parsed.type === "nickname") {
+			socket["nickname"] = parsed.payload;
+		}
 	});
+
 	// send message to the browser
-	socket.send("hello from the server 🏀");
+	// socket.send("hello from the server 🏀");
 });
 
 server.listen(3000, handleListen);

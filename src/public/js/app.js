@@ -1,15 +1,45 @@
 const socket = new WebSocket(`ws://${window.location.host}`);
+const messageList = document.querySelector("ul");
+const messageForm = document.querySelector("#message");
+const nickForm = document.querySelector("#nickname");
+
+function makeMessage(type, payload) {
+	const msg = { type, payload };
+	return JSON.stringify(msg);
+}
 
 socket.addEventListener("open", () => {
 	console.log("Connected to Browser 🍪");
 });
-socket.addEventListener("message", (message) => {
-	console.log("Just got this: ", message.data, " from the server");
-});
+// socket.addEventListener("message", (message) => {
+// 	console.log(message);
+// });
 socket.addEventListener("close", () => {
 	console.log("Connection ended 🍩");
 });
 
-setTimeout(() => {
-	socket.send("hello from the browser ⚾️");
-}, 10000);
+socket.addEventListener("message", (message) => {
+	const li = document.createElement("li");
+	li.innerText = message.data;
+	messageList.append(li);
+});
+// setTimeout(() => {
+// 	socket.send("hello from the browser ⚾️");
+// }, 10000);
+
+function handleSubmit(event) {
+	event.preventDefault();
+	const input = messageForm.querySelector("input");
+	socket.send(makeMessage("message", input.value));
+	input.value = "";
+}
+function handleNNSubmit(event) {
+	event.preventDefault();
+	const input = nickForm.querySelector("input");
+	const nicknameH2 = document.querySelector("h2");
+	nicknameH2.innerText = `Welcome, ${input.value}`;
+	socket.send(makeMessage("nickname", input.value));
+	input.value = "";
+}
+messageForm.addEventListener("submit", handleSubmit);
+nickForm.addEventListener("submit", handleNNSubmit);
