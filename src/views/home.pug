@@ -8,12 +8,17 @@ html(lang="en")
         header
             h1 Welcome to Zooooom
         main 
-            h2
-            form#nickname
-                input(type="text", placeholder="nickname")
-                button Save
-            ul
-            form#message
-                input(type="text", placeholder="write a message", required)
-                button Send
+            //- h2
+            //- form#nickname
+            //-     input(type="text", placeholder="nickname")
+            //-     button Save
+            //- ul
+            //- form#message
+            //-     input(type="text", placeholder="write a message", required)
+            //-     button Send
+            div#welcome
+                form(action="") 
+                    input(type="text", placeholder="room name", required)
+                    button Enter Room
+        script(src="/socket.io/socket.io.js")
         script(src="public/js/app.js")
