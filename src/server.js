@@ -22,7 +22,14 @@ const server = http.createServer(app);
 const io = SocketIO(server);
 
 io.on("connection", (socket) => {
-	socket.on("enter_room", (msg) => console.log(msg));
+	socket.on("enter_room", (roomName, roomHidden) => {
+		socket.join(roomName);
+		// {socket.id, socket_room}
+		console.log(socket.rooms);
+		roomHidden();
+		// show join message to everyone in the room
+		socket.to(roomName).emit("welcome");
+	});
 });
 
 // 어떤 socket이 연결되었는지 저장하기 위한 array
