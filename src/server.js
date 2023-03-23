@@ -22,14 +22,25 @@ const server = http.createServer(app);
 const io = SocketIO(server);
 
 io.on("connection", (socket) => {
+	socket["nickname"] = "someone";
 	socket.on("enter_room", (roomName, roomHidden) => {
 		socket.join(roomName);
 		// {socket.id, socket_room}
 		console.log(socket.rooms);
 		roomHidden();
 		// show join message to everyone in the room
-		socket.to(roomName).emit("welcome");
+		socket.to(roomName).emit("welcome", socket.nickname);
 	});
+	socket.on("disconnectiing", () => {
+		socket.rooms.forEach((room) =>
+			socket.to(room).emit("bye", socket.nickname)
+		);
+	});
+	socket.on("new_message", (msg, room, addMessage) => {
+		socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
+		addMessage();
+	});
+	socket.on("nickname", (nickname) => (socket["nickname"] = nickname));
 });
 
 // 어떤 socket이 연결되었는지 저장하기 위한 array
